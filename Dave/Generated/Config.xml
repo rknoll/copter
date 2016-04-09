@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<Project MotherSystem_Version="" Name="LARIX_Software_150907" Path="C:\DAVE3_workspace\wsHERBY\LARIX_Software_150907">
+<Project MotherSystem_Version="" Name="copter" Path="Z:\Projects\f9l\AirCheck\copter">
     <COMPILER>
         <Name>ARM-GCC</Name>
         <Version/>
@@ -172,13 +172,13 @@
                 <Type>C File</Type>
             </Source_File>
             <Source_File>
-                <File_Name>USBD_EndpointStream_XMC4000.c</File_Name>
-                <Path>\Dave\Generated\src\USBD\usbd\USBD_EndpointStream_XMC4000.c</Path>
+                <File_Name>USBD_Endpoint_XMC4000.c</File_Name>
+                <Path>\Dave\Generated\src\USBD\usbd\USBD_Endpoint_XMC4000.c</Path>
                 <Type>C File</Type>
             </Source_File>
             <Source_File>
-                <File_Name>USBD_Endpoint_XMC4000.c</File_Name>
-                <Path>\Dave\Generated\src\USBD\usbd\USBD_Endpoint_XMC4000.c</Path>
+                <File_Name>USBD_EndpointStream_XMC4000.c</File_Name>
+                <Path>\Dave\Generated\src\USBD\usbd\USBD_EndpointStream_XMC4000.c</Path>
                 <Type>C File</Type>
             </Source_File>
             <Source_File>
@@ -529,13 +529,13 @@
                 <Type>H File</Type>
             </Header_File>
             <Header_File>
-                <File_Name>USBD_EndpointStream_XMC4000.h</File_Name>
-                <Path>\Dave\Generated\src\USBD\usbd\USBD_EndpointStream_XMC4000.h</Path>
+                <File_Name>USBD_Endpoint_XMC4000.h</File_Name>
+                <Path>\Dave\Generated\src\USBD\usbd\USBD_Endpoint_XMC4000.h</Path>
                 <Type>H File</Type>
             </Header_File>
             <Header_File>
-                <File_Name>USBD_Endpoint_XMC4000.h</File_Name>
-                <Path>\Dave\Generated\src\USBD\usbd\USBD_Endpoint_XMC4000.h</Path>
+                <File_Name>USBD_EndpointStream_XMC4000.h</File_Name>
+                <Path>\Dave\Generated\src\USBD\usbd\USBD_EndpointStream_XMC4000.h</Path>
                 <Type>H File</Type>
             </Header_File>
             <Header_File>
@@ -591,8 +591,8 @@
         <Assembler_Symbol>DAVE_CE=</Assembler_Symbol>
         <Assembler_Symbol>UC_ID=4502003</Assembler_Symbol>
         <Compiler_Symbol>DAVE_CE=</Compiler_Symbol>
-        <Compiler_Symbol>UC_ID=4502003</Compiler_Symbol>
         <Compiler_Symbol>ARM_MATH_CM4=</Compiler_Symbol>
+        <Compiler_Symbol>UC_ID=4502003</Compiler_Symbol>
         <Compiler_Symbol>__FPU_PRESENT=</Compiler_Symbol>
     </Preprocessor_Symbols>
 </Project>
