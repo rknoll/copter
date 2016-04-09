@@ -68,6 +68,8 @@
 #define Monitoring_Timer		 PWMSP001_Handle7
 //---------------------------------Rename of Timer(PWM) Handles used within the Quadrocopter Software  ------
 
+//#define SERIAL_DEBUG
+
 #define CONTROL_ORDER 2
 
 float yoffset = 0.0;
@@ -334,8 +336,20 @@ int main(void)
 //	/* Initialization of the  USBD_VCOM App */
 		if(USBD_VCOM_Init() != DAVEApp_SUCCESS)
 		{
+			while(1){
+
+									for (int orcount = 0; orcount<300000; orcount++)__NOP();
+									TOGGLE_P3_0;
+									for (int orcount = 0; orcount<300000; orcount++)__NOP();
+									TOGGLE_P3_1;
+									ortime++;
+							}
 			return -1;
 		}
+
+#ifdef SERIAL_DEBUG
+		uint32_t power = 0;
+#endif
 
 	#ifdef DEBUG_SPECIFIC
 	#undef DEBUG_CONTINOUS
@@ -348,20 +362,30 @@ int main(void)
 	uint32_t helper = 0;
 	#endif
 
+	ortime=0;
+	while(ortime<20){
+
+							for (int orcount = 0; orcount<300000; orcount++)__NOP();
+							TOGGLE_P3_0;
+							for (int orcount = 0; orcount<300000; orcount++)__NOP();
+							TOGGLE_P3_1;
+							ortime++;
+					}
 	while(1)
 	{
 		updateValues(&p,&t);
 
+#ifndef SERIAL_DEBUG
 		if(newvalue){
 
 			CalculateActuatorSpeed_Percent(&u_roll, &u_pitch, &u_yaw_dot, &powerD, actuator_speed_percent, &YPR[1], &YPR[2]);
 
 			#ifdef PWM_OUTPUT
 			//Scale percent Output
-			PWM_width[0]=0.45*actuator_speed_percent[0]+45;
-			PWM_width[1]=0.45*actuator_speed_percent[1]+45;
-			PWM_width[2]=0.45*actuator_speed_percent[2]+45;
-			PWM_width[3]=0.45*actuator_speed_percent[3]+45;
+			PWM_width[0]=0.45*actuator_speed_percent[3]+45;
+			PWM_width[1]=0.45*actuator_speed_percent[2]+45;
+			PWM_width[2]=0.45*actuator_speed_percent[0]+45;
+			PWM_width[3]=0.45*actuator_speed_percent[1]+45;
 
 			//set actors																//normal//LARIX with PWMoutput
 			#ifdef LARIX_with_PWM_used
@@ -448,7 +472,103 @@ int main(void)
 
 			newvalue=0;
 		}
+#else
 
+#ifdef PWM_OUTPUT
+//Scale percent Output
+		actuator_speed_percent[0]=powerD;
+		actuator_speed_percent[1]=powerD;
+		actuator_speed_percent[2]=powerD;
+		actuator_speed_percent[3]=powerD;
+PWM_width[0]=0.45*actuator_speed_percent[0]+45;
+PWM_width[1]=0.45*actuator_speed_percent[1]+45;
+PWM_width[2]=0.45*actuator_speed_percent[2]+45;
+PWM_width[3]=0.45*actuator_speed_percent[3]+45;
+
+//set actors																//normal//LARIX with PWMoutput
+#ifdef LARIX_with_PWM_used
+PWMSP001_SetDutyCycle((PWMSP001_HandleType*)&ESC_PWM_Handle0, PWM_width[3]);
+PWMSP001_SetDutyCycle((PWMSP001_HandleType*)&ESC_PWM_Handle1, PWM_width[2]);
+PWMSP001_SetDutyCycle((PWMSP001_HandleType*)&ESC_PWM_Handle2, PWM_width[0]);
+PWMSP001_SetDutyCycle((PWMSP001_HandleType*)&ESC_PWM_Handle3, PWM_width[1]);
+#endif
+#ifdef WIDEFIELD_used
+PWMSP001_SetDutyCycle((PWMSP001_HandleType*)&ESC_PWM_Handle0, PWM_width[0]);
+PWMSP001_SetDutyCycle((PWMSP001_HandleType*)&ESC_PWM_Handle1, PWM_width[1]);
+PWMSP001_SetDutyCycle((PWMSP001_HandleType*)&ESC_PWM_Handle2, PWM_width[2]);
+PWMSP001_SetDutyCycle((PWMSP001_HandleType*)&ESC_PWM_Handle3, PWM_width[3]);
+//			#else
+//			PWMSP001_SetDutyCycle((PWMSP001_HandleType*)&ESC_PWM_Handle0, PWM_width[0]);
+//			PWMSP001_SetDutyCycle((PWMSP001_HandleType*)&ESC_PWM_Handle1, PWM_width[1]);
+//			PWMSP001_SetDutyCycle((PWMSP001_HandleType*)&ESC_PWM_Handle2, PWM_width[2]);
+//			PWMSP001_SetDutyCycle((PWMSP001_HandleType*)&ESC_PWM_Handle3, PWM_width[3]);
+#endif
+#endif
+
+#ifdef UART_SC_IF
+	#ifdef IRMCK
+	uint32_t data_TX;
+	//Motor 1
+	DaisyTransmit[0]=SET_MOTOR_SPEED;
+	data_TX=(uint16_t)((actuator_speed_percent[0]/100.0)*65535.0);
+	if(powerD<10) data_TX = 0;
+	DaisyTransmit[1]=(uint8_t)(data_TX>>8);
+	DaisyTransmit[2]=(uint8_t) data_TX;
+
+	//Motor 2
+	DaisyTransmit[3]=SET_MOTOR_SPEED;
+	data_TX=(uint16_t)((actuator_speed_percent[1]/100.0)*65535.0);
+	if(powerD<10) data_TX = 0;
+	DaisyTransmit[4]=(uint8_t)(data_TX>>8);
+	DaisyTransmit[5]=(uint8_t) data_TX;
+
+	//Motor 3
+	DaisyTransmit[6]=SET_MOTOR_SPEED;
+	data_TX=(uint16_t)((actuator_speed_percent[2]/100.0)*65535.0);
+	if(powerD<10) data_TX = 0;
+	DaisyTransmit[7]=(uint8_t)(data_TX>>8);
+	DaisyTransmit[8]=(uint8_t) data_TX;
+
+	//Motor 4
+	DaisyTransmit[9]=SET_MOTOR_SPEED;
+	data_TX=(uint16_t)((actuator_speed_percent[3]/100.0)*65535.0);
+	if(powerD<10) data_TX = 0;
+	DaisyTransmit[10]=(uint8_t)(data_TX>>8);
+	DaisyTransmit[11]=(uint8_t) data_TX;
+
+	UART001_WriteDataBytes(&ESC_UART_Handle, DaisyTransmit, 12);
+	#else
+	uint16_t data;
+
+	//Motor 1
+	DaisyTransmit[0]=SET_MOTOR_SPEED;
+	data=actuator_speed_percent[0]/100.0*0xFFFF;
+	DaisyTransmit[1]=(uint8_t)(data>>8);
+	DaisyTransmit[2]=(uint8_t) data;
+
+	//Motor 2
+	DaisyTransmit[3]=SET_MOTOR_SPEED;
+	data=actuator_speed_percent[1]/100.0*0xFFFF;
+	DaisyTransmit[4]=(uint8_t)(data>>8);
+	DaisyTransmit[5]=(uint8_t) data;
+
+	//Motor 3
+	DaisyTransmit[6]=SET_MOTOR_SPEED;
+	data=actuator_speed_percent[2]/100.0*0xFFFF;
+	DaisyTransmit[7]=(uint8_t)(data>>8);
+	DaisyTransmit[8]=(uint8_t) data;
+
+	//Motor 4
+	DaisyTransmit[9]=SET_MOTOR_SPEED;
+	data=actuator_speed_percent[3]/100.0*0xFFFF;
+	DaisyTransmit[10]=(uint8_t)(data>>8);
+	DaisyTransmit[11]=(uint8_t) data;
+
+	UART001_WriteDataBytes(&UART001_Handle2, DaisyTransmit, 12);
+	#endif
+#endif
+
+#endif
 
       	#ifdef DEBUG_SPECIFIC
 		#undef DEBUG_CONTINOUS
@@ -498,6 +618,24 @@ int main(void)
 					updateValues(&p,&t);
 					sprintf(USB_Tx_Buffer, "Pressure: %d Temperature: %d Counter: %d\n",(int)p,(int)t,(int)DPS310_INT_counter);
 
+					break;
+				case 'a':
+#ifdef SERIAL_DEBUG
+					power += 10;
+					if (power > 100) power = 100;
+					powerD = power;
+					sprintf(USB_Tx_Buffer, "Set Speed to: %d\n",(int)power);
+#endif
+					break;
+				case 'b':
+#ifdef SERIAL_DEBUG
+					power = 0;
+					powerD = power;
+					sprintf(USB_Tx_Buffer, "Set Speed to: %d\n",(int)power);
+#endif
+					break;
+				default:
+					sprintf(USB_Tx_Buffer, "Unknown Command\n");
 					break;
 			}
 			USBD_VCOM_SendString((const char *)USB_Tx_Buffer);
