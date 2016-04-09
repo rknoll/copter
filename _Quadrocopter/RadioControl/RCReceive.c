@@ -50,7 +50,7 @@ uint32_t timeout_count = 0;
 
 uint8_t modeBT = 0;
 
-uint8_t flightmode = 0; //Flightmode switch
+uint8_t flightmode = 1; // Default Flightmode switch (0 == RC, 1 == BT)
 
 uint8_t RCTimeOut = 1; //Timeout remote control 0:OK 1:TimeOut
 uint8_t RCCount = 0; //Counter for RC read (used for TimeOut)
