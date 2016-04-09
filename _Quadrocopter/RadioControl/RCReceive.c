@@ -324,7 +324,7 @@ void GetRCData(float* power, float* yaw_dot, float* pitch, float* roll)
 	}
 	else
 	{
-		if (BTTimeOut || RCTimeOut)
+		if (BTTimeOut && 0)
 		{
 			*power=0;
 			*yaw_dot=0;
