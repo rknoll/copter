@@ -322,8 +322,8 @@ This defines the number of FIFO entries assigned to the transmit buffer</toolTip
   </provided>
   <provided xsi:type="ResourceModel:IntegerParameter" name="Receive FIFO trigger limit" evalFunction="&#xD;&#xA;        function ForwardMapping()&#xD;&#xA;        {&#xD;&#xA;          var Res = SCM.getResource(&quot;channel/rbctr/limit&quot;); &#xD;&#xA;          var Intvalue = SCM.getIntValue(currentResource); &#xD;&#xA;          SCM.setIntValue(Res,Intvalue);&#xD;&#xA;        }&#xD;&#xA;        function BackwardMapping()&#xD;&#xA;        {&#xD;&#xA;          var Res = SCM.getResource(&quot;channel/rbctr/limit&quot;); &#xD;&#xA;          var Intvalue = SCM.getIntValue(Res); &#xD;&#xA;          SCM.setIntValue(currentResource,Intvalue);&#xD;&#xA;        }       " URI="http://www.infineon.com/1.0.24/app/uart001/1/uart001_irwrxfifotrigger" downWardmappedList="//@consumed.30" maxValue="31" minValue="0">
     <defaultValue xsi:type="ResourceModel:IntegerValue" value="0"/>
-    <localValue xsi:type="ResourceModel:StringValue" value="12"/>
-    <globalValue xsi:type="ResourceModel:IntegerValue" value="12"/>
+    <localValue xsi:type="ResourceModel:StringValue" value="1"/>
+    <globalValue xsi:type="ResourceModel:IntegerValue" value="1"/>
     <toolTipHelpDescription>Enter the value less than the 
  selected receive FIFO size.</toolTipHelpDescription>
   </provided>
@@ -660,9 +660,9 @@ specific interrupt signal otherwise there
     <globalValue xsi:type="ResourceModel:IntegerValue" value="0"/>
   </consumed>
   <consumed xsi:type="ResourceModel:ProxyResource" URI="http://www.infineon.com/1.0.24/app/uart001/1/channel/rbctr/limit" upWardMappingList="//@provided.31/@item.0 //@provided.34" isSystemDefined="true">
-    <localValue xsi:type="ResourceModel:IntegerValue" value="12"/>
+    <localValue xsi:type="ResourceModel:IntegerValue" value="1"/>
     <downWardmappedList xsi:type="ResourceModel:BitField" href="../../USIC0/USIC0_0.dd#//@provided.11"/>
-    <globalValue xsi:type="ResourceModel:IntegerValue" value="12"/>
+    <globalValue xsi:type="ResourceModel:IntegerValue" value="1"/>
   </consumed>
   <consumed xsi:type="ResourceModel:ProxyResource" URI="http://www.infineon.com/1.0.24/app/uart001/1/channel/rbctr_size" upWardMappingList="//@provided.30/@item.5 //@provided.31/@item.0 //@provided.32/@item.0 //@provided.32/@item.1 //@provided.32/@item.2 //@provided.32/@item.3 //@provided.32/@item.4 //@provided.32/@item.5 //@provided.32/@item.6" isSystemDefined="true">
     <localValue xsi:type="ResourceModel:IntegerValue" value="5"/>

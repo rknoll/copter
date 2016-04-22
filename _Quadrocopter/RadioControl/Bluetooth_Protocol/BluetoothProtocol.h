@@ -14,9 +14,8 @@
 #ifndef SERIAL_CMD_H_
 #define SERIAL_CMD_H_
 
-#define BLUETOOTH_INPUT_BUFFER 32
-#define OUTPUT_BUFFER 10
 #define HARDWARE_BUFFER_SIZE 32
+#define SOFTWARE_BUFFER_SIZE 19
 #define PACKET_SIZE 19
 #define PACKET_HEADER 1
 #define PACKET_CHECKSUM 4
@@ -24,6 +23,7 @@
 
 #define RECEIVED_DATA_PACKET 1
 #define RECEIVED_DATA_PACKET_N_C 2
+#define RECEIVED_N_C 3
 #define RECEIVED_CONTROL_PACKET 0
 #define CHECKSUM_ERROR -1
 #define UNDEFINED_ERROR -2
@@ -53,7 +53,7 @@ uint32_t checksum;
 #pragma pack()
 
 
-status_t maintainBluetoothInputBuffer(uint8_t input_buffer[BLUETOOTH_INPUT_BUFFER],ControlValue *control_value,DataPacket *packet);
+status_t maintainBluetoothInputBuffer(uint8_t *input_buffer,uint32_t *count,ControlValue *control_value,DataPacket *packet);
 
 
 #endif /* SERIAL_CMD_H_ */

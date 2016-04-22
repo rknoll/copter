@@ -20,7 +20,8 @@
 
 ControlValue control_value;
 DataPacket dpacket;
-uint8_t ReadBufBT[HARDWARE_BUFFER_SIZE] = {0};
+uint8_t ReadBufBTSW[SOFTWARE_BUFFER_SIZE] = {0};
+uint32_t ReadBufBTSW_Count = 0;
 
 ///////////////////////////////////////////////////////////////////
 
@@ -163,15 +164,16 @@ void RC_RECEIVE_ISR()
 
 void BT_RECEIVE_ISR()
 {
-
 	if(UART001_GetFlagStatus(&BT_UART_Handle,UART001_FIFO_STD_RECV_BUF_FLAG) == UART001_SET)
 	{
-
-		UART001_ReadDataBytes(&BT_UART_Handle,ReadBufBT,HARDWARE_BUFFER_SIZE);
+		uint32_t last_count = ReadBufBTSW_Count;
+		uint32_t buffer_size = (SOFTWARE_BUFFER_SIZE - last_count) < HARDWARE_BUFFER_SIZE ? (SOFTWARE_BUFFER_SIZE - last_count) : HARDWARE_BUFFER_SIZE;
+		last_count += UART001_ReadDataBytes(&BT_UART_Handle,ReadBufBTSW + last_count,buffer_size);
 	   	//Clear receive buffer interrupt flag
 	   	UART001_ClearFlag(&BT_UART_Handle,UART001_FIFO_STD_RECV_BUF_FLAG);
-	    status_t rec_mode = maintainBluetoothInputBuffer(ReadBufBT,
+	    status_t rec_mode = maintainBluetoothInputBuffer(ReadBufBTSW, &last_count,
 	   							&control_value, &dpacket);
+	    ReadBufBTSW_Count = last_count;
 
 		switch (rec_mode)
 		{
@@ -229,6 +231,7 @@ void BT_RECEIVE_ISR()
 
 		  case CHECKSUM_ERROR:
 
+  			  SET_P3_1;
 		  throttleBT = 0.0;
 	      aileronBT = 0.0;
 		  elevatorBT = 0.0;
@@ -268,8 +271,18 @@ void WatchRC(void* Temp)
 	if (lastCount == RCCount) RCTimeOut = 1;
 	lastCount = RCCount;
 
-	if (lastBTCount == BTCount) BTTimeOut = 1;
+	if (lastBTCount == BTCount) {
+		BTTimeOut = 1;
+		ReadBufBTSW_Count = 0;
+	}
 	lastBTCount = BTCount;
+
+	RESET_P3_1;
+	if (BTTimeOut) {
+		SET_P3_0;
+	} else {
+		RESET_P3_0;
+	}
 
 	//keep_alive packet for connection state_check
 	uint8_t keep_alive = 0xFF;
@@ -324,7 +337,7 @@ void GetRCData(float* power, float* yaw_dot, float* pitch, float* roll)
 	}
 	else
 	{
-		if (BTTimeOut && 0)
+		if (BTTimeOut)
 		{
 			*power=0;
 			*yaw_dot=0;
