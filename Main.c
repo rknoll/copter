@@ -94,13 +94,13 @@ float x_yaw[CONTROL_ORDER];
 
 //Controllerparamter
 const float T=0.005;
-const float P_roll =100;//162.0852;//64.3188;
-const float I_roll = 0;//18;//5;
-const float D_roll = 12;//19.1013;//12.0355;
+const float P_roll =20;//162.0852;//64.3188;
+const float I_roll = 2;//18;//5;
+const float D_roll = 10;//19.1013;//12.0355;
 const float N_roll = 200;//62.4365;//40.5471;
-const float P_pitch =100;//166.4663;//66.0573;
-const float I_pitch = 0;//20;//5;
-const float D_pitch =12;//19.6176;//12.3609;
+const float P_pitch =20;//166.4663;//66.0573;
+const float I_pitch = 2;//20;//5;
+const float D_pitch =10;//19.6176;//12.3609;
 const float N_pitch =200;//62.4365;//40.5471;
 const float P_yaw = 110;
 const float I_yaw = 0.15;
